@@ -28,3 +28,24 @@ Accidentally pushed something to GitHub you weren't supposed to? Have no (read: 
 4. `git cherry-pick <commit ID of xx>` to add that commit to the current branch
 
   [Reference: StackOverflow](https://stackoverflow.com/questions/14635672/git-rebase-a-single-commit)
+
+### Regex
+Try things out here: [Regex101](https://regex101.com/)
+
+###### Important things to remember
+- Character range `[a-z]` or `[0-3]`
+- Character list `[012]` matches 0, 1, or 2
+- Occurences as in `[a-f]+` (1+ occurences of any characters in `a-f` [eg. "fabb"])
+  - `?` is 0-1
+  - `*` is 0+
+  - `+` is 1+
+  - `{n}` is exactly n
+  - `{n,}` is n+
+  - `{n,m}` is between n and m (inclusive)
+- Start of string `^`
+- End of string `$`
+- Any character `.`
+- Any digit `\d` (non-digit `\D`)
+- Any word character `\w` (non-word `\W`)
+- Any whitespace `\s` (non-whitespace `\S`)
+- Either `a|b` matches exactly one of `a` and `b`
