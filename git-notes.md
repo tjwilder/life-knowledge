@@ -15,3 +15,27 @@ Accidentally pushed something to GitHub you weren't supposed to? Have no (read: 
 4. `git cherry-pick <commit ID of xx>` to add that commit to the current branch
 
 [Reference: StackOverflow](https://stackoverflow.com/questions/14635672/git-rebase-a-single-commit)
+
+###### Git prune branches
+- http://erikaybar.name/git-deleting-old-local-branches/
+
+###### Git list changes in commits
+* Lines-changed by file `git diff --stat HEAD~5 HEAD`
+  - `--numstat` instead gives the number of lines added and removed individually
+  - `--shortstat` gives the total # of files and lines changed
+- Full diff `git diff HEAD~4 HEAD~2`
+- Total changed files with file status `git diff --name-status HEAD~5 HEAD^`
+- Total changed files with file status by commit `git diff --name-status --oneline HEAD~12 HEAD~4`
+- Total changed files `git diff --name-only HEAD~3 HEAD`
+- Files changed in a commit `git show --name-only commit-SHA`
+
+##### Merge Methods
+###### Resolve Single File to either side
+- `git checkout --ours -- file`
+- `git checkout --theirs -- file`
+  - The extra `--` is to prevent problems if your file is called, for instance, `theirs`
+  - Each of these require you to `git add file` afterwards to resolve it
+- `git checkout HEAD -- file`
+  - This resolves to the current HEAD version (which should be ~= --ours)
+  - This doesn't require you to `git add` afterwards, it immediately resolves
+  
