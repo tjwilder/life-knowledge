@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# Runs several docker commands in order
+## docker-compose down
+## if (-b) docker-compose build
+## docker-compose up -d
+## if (-f) docker-compose logs -f
+
 docker-compose down
 BUILD=false
 FOLLOW=false

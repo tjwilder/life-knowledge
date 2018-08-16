@@ -11,5 +11,5 @@ for possible in $containers; do
     fi
 done
 
-docker exec -it $container bash -c -it "su postgres -c \"psql ${container_name}_development\""
-# docker exec -it $container bash -c -it "su postgres -c \"psql consumer\""
+# Currently assumes that the name of the database is the same as the name of the container
+docker exec -it $container bash -c -it "su postgres -c \"psql ${container_name}\""

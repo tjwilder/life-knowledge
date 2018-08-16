@@ -1,0 +1,24 @@
+[user]
+	email = tj@lovepopcards.com
+	name = tj
+[core]
+	editor = vim
+	autocrlf = input
+	# Force line endings to LF
+	eol = lf
+[alias]
+	co = checkout
+	# Show git stash by name
+	sshow  = "!f() { git stash show stash^{/$*} -p; }; f"
+	# Apply git stash by name
+	sapply = "!f() { git stash apply stash^{/$*}; }; f"
+	# Pop git stash by name
+	spop = "!f() { git stash pop stash^{/$*}; }; f"
+	# Ignore file, hiding changes from git, until unignored
+	ignore = update-index --skip-worktree
+	# Unignore an ignored file, allowing git to see changes
+	unignore = update-index --no-skip-worktree
+	# List git ignored files
+	ignored = !git ls-files -v | grep "^[[:lower:]]"
+	# Prunes local branches which have been deleted remotely
+	prune-local = !git branch -vv | grep 'origin/.*: gone]' | awk '{print $1}' | xargs git branch -d

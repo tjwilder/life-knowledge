@@ -40,8 +40,8 @@ function dexecSpec() {
 	fi
 }
 
-dexecSpec '' 'Kamino'
-#dexecSpec 'lib/lovepop_auth' 'LovepopAuth'
+dexecSpec '' 'Main project'
+# Nested specs may be put here
 
 
 echo ''

@@ -1,11 +1,19 @@
-# Notes
+# Life Knowledge
+The title is pretentious, I know. But it does pretty much represent the ultimate goal of it.
+
+The general idea of this project is for me personally to collect knowledge and evolve configuration and multi-purpose scripts over time. Eventually, it should be possible for anyone to run the initialization script and have all the main utilities and configuration that I've evolved. I'm open to any config or script enhancements or for anyone to use any of the scripts or configuration in this project.
+
+Currently there's partial support for loading vim, tmux, and git configs into Linux and WSL (Windows Subsystem for Linux). No promises with anything else. There's also a number of (undocumented) scripts which will be put into the path which may not work on certain environments.
+
+Eventually I want to automatically install dependencies for scripts and have configuration for installing/configuring individual parts.
+
 ##### Available Notes:
-- [Bash Notes](https://github.com/tjwilder/notes/blob/master/bash-notes.md)
-- [Cognito Notes](https://github.com/tjwilder/notes/blob/master/cognito/cognito-notes.md)
-- [Gem Notes](https://github.com/tjwilder/notes/blob/master/gem-notes.md)
-- [Git Notes](https://github.com/tjwilder/notes/blob/master/git-notes.md)
-- [Postgres Notes](https://github.com/tjwilder/notes/blob/master/postgres-notes.md)
-- [Regex Notes](https://github.com/tjwilder/notes/blob/master/regex-notes.md)
-- [Rspec Notes](https://github.com/tjwilder/notes/blob/master/rspec-notes.md)
-- [Tmux Notes](https://github.com/tjwilder/notes/blob/master/tmux-notes.md)
-- [Vim Notes](https://github.com/tjwilder/notes/blob/master/vim-notes.md)
+- [Bash Notes](bash-notes.md)
+- [Cognito Notes](cognito/cognito-notes.md)
+- [Gem Notes](gem-notes.md)
+- [Git Notes](git-notes.md)
+- [Postgres Notes](postgres-notes.md)
+- [Regex Notes](regex-notes.md)
+- [Rspec Notes](rspec-notes.md)
+- [Tmux Notes](tmux-notes.md)
+- [Vim Notes](vim-notes.md)

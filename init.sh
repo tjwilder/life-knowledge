@@ -8,7 +8,7 @@ GENERAL_SCRIPTS_DIR="${BASE_SCRIPTS_DIR}/general"
 
 SCRIPT_RC="${BASE_SCRIPTS_DIR}/.scriptrc"
 
-# SETUP REQUIRED LINUX PROGRAMS #
+# SETUP LINUX STUFF
 
 ## INSTALL SCRIPTS
 
@@ -34,12 +34,13 @@ if ! grep -Fq $SCRIPT_RC ~/.bashrc; then
 	echo "source $SCRIPT_RC" >> ~/.bashrc
 	touch $SCRIPT_RC
 	echo 'export PATH="${BASE_SCRIPTS_DIR}:$PATH"' >> $SCRIPT_RC
+	# If we're in WSL, we also need to fix Docker
+	if grep -q Microsoft /proc/version; then
+		echo 'export DOCKER_HOST="tcp://localhost:2375"' >> $SCRIPT_RC
+	fi
 fi
 
 ## SET DEFAULT ENV VARS
-
-#### Allow Docker on WSL
-#echo 'export DOCKER_HOST="tcp://localhost:2375"' >> $SCRIPT_RC
 
 # SETUP WINDOWS PROGRAMS #
 # ngrok #
@@ -47,6 +48,7 @@ fi
 # lice cap # For capturing gifs
 
 ## Config Files
+tput setaf 6; echo 'Setting configuration settings'; tput sgr0
 ### Vim
 cp ./config/vim/* ~/
 ##### Install vim-plug
@@ -57,26 +59,32 @@ cp ./config/tmux/* ~/
 ##### Install TPM
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
+### Git
+cp ./config/git/* ~/
+
 ## WSL (Windows Subsystem for Linux) Stuff
 if grep -q Microsoft /proc/version; then
-	tput setaf 6; echo 'Initializing WSL...'; tput sgr0
-	### Fix Docker mounting (mostly)
+	tput setaf 6; echo 'Initializing WSL settings...'; tput sgr0
+	### Fix WSL using /mnt/c instead of /c
 	tput setaf 7
-	echo 'Fixing docker mounting requires manual intervention'
+	echo 'Fixing Docker mounting requires manual intervention'
 	echo 'Copy the following 6 lines into ~/.bashrc and fill in the password'
 	echo 'You can also do this manually when you open WSL if you prefer not to have your password in plaintext'
 	tput sgr0
 	echo
 	echo "# Create the /c directory if it doesn't exist"
 	echo 'mkdir -p /c'
-	echo "# sudo mount the default /mnt/c onto just /c"
+	echo "# bind mount the default /mnt/c onto just /c"
 	echo "echo 'YOUR_PASSWORD_HERE' | sudo -S -p ' ' mount --bind /mnt/c /c"
 	echo 'cd ${PWD#/mnt}'
 	echo 'echo # for formatting'
 	echo
+
+	#### Fix docker mounting config with powershell script
+	#### Auto-fix outside of WSL if possible
 fi
 
-## Native linux-specific stuff (not WSL)
+## Native linux-specific stuff (non-WSL)
 if ! grep -q Microsoft /proc/version; then
 	### If I ever get anything...
 	echo
