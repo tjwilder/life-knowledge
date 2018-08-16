@@ -1,0 +1,5 @@
+#!/bin/bash
+line=$(git reflog stash | grep "$@" | head -n 1)
+words=($line)
+
+git stash show -p $words

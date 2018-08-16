@@ -1,0 +1,29 @@
+#!/bin/bash
+docker-compose down
+BUILD=false
+FOLLOW=false
+while getopts "bf" opt; do
+  case $opt in
+    b)
+      BUILD=true
+      ;;
+    f)
+      FOLLOW=true
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+  esac
+done
+
+if [ $BUILD = true ]; then
+  docker-compose build
+	error=$?
+	if [[ $error -ne 0 ]]; then
+		exit $error
+	fi
+fi
+docker-compose up -d
+if [ $FOLLOW = true ]; then
+  docker-compose logs -f
+fi

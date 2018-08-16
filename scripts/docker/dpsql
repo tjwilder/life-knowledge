@@ -1,0 +1,15 @@
+#!/bin/bash
+folder=${PWD##*/}
+container_name=${folder//_}
+containers=$(get_completions "docker exec -it $container_name")
+
+container=''
+for possible in $containers; do
+    if [[ $possible =~ 'postgres' ]]; then
+        container=$possible
+        break
+    fi
+done
+
+docker exec -it $container bash -c -it "su postgres -c \"psql ${container_name}_development\""
+# docker exec -it $container bash -c -it "su postgres -c \"psql consumer\""

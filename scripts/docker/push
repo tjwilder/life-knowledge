@@ -1,0 +1,10 @@
+#!/bin/bash
+prepush
+success=$?
+if [ $success -eq 0 ]; then
+	tput setaf 6; echo 'Prepush succeeded, pushing'; tput sgr0
+	git push "$@"
+else
+	tput setaf 1; echo 'Failed prepush, aborting'; tput sgr0
+fi
+echo ''

@@ -1,0 +1,48 @@
+#!/bin/bash
+rubocop_results=$(dexec rubocop app spec lib)
+rubocop_filtered=$(echo "$rubocop_results" | grep -E 'files inspected')
+
+echo ''
+tput setaf 6; echo 'Rubocop results:'; tput sgr0
+if [[ $rubocop_filtered =~ no\ offenses ]]; then
+	echo "$rubocop_filtered"
+else
+	echo "$rubocop_results"
+	echo ''
+	exit 1
+fi
+
+function dexecSpec() {
+	local path=$1
+	local name=$2
+
+	spec=$(dexec bundle exec rspec ${path})
+	local success=true
+	spec_status=$(echo "$spec" | grep -E 'Finished in.*|\d* examples[^:]+')
+	if [[ $spec_status =~ (, [^0]* failure) ]] || \
+		 [[ $spec_status =~ (error occured outside) ]]; then
+		success=false
+		echo "$spec_status"
+		spec_status=$(dexec bundle exec rspec --format documentation --only-failures)
+	fi
+
+	echo ''
+	if [ $success = true ]; then
+		tput setaf 6; echo "${name} spec results:"; tput sgr0
+		echo "$spec_status"
+	else
+		tput setaf 6; echo "${name} failed tests:"; tput sgr0
+		echo "$split"
+		echo ''
+		echo "$spec_status"
+		echo ''
+		exit 1
+	fi
+}
+
+dexecSpec '' 'Kamino'
+#dexecSpec 'lib/lovepop_auth' 'LovepopAuth'
+
+
+echo ''
+exit 0

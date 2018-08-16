@@ -1,0 +1,4 @@
+#!/bin/bash
+
+source /c/Lib/get_completions
+get_completion "$@"
