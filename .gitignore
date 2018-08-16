@@ -1,4 +1,11 @@
+# Don't auto-add markdown or data files, they must be explicitly added
 *.md
 *.json
 *.txt
 *.html
+
+# Vim swap file
+*.swp
+
+# Generic stuff
+*.zip

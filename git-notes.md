@@ -2,7 +2,7 @@
 
 ###### GitHub Un-commit
 Accidentally pushed something to GitHub you weren't supposed to? Have no (read: some) fear! Though GitHub will likely cache the commit regardless (see [StackOverflow](https://stackoverflow.com/questions/448919/how-can-i-remove-a-commit-on-github)), you can just run a few things to fix it:
-1. `git stash` to clean the working branch
+1. `git checkout .` or `git stash` to clean the working branch
 2. `git reset --soft HEAD^` to undo the commit (everything in the commit will be staged)
 3. `git reset FILE_NAME` to un-stage each file you didn't want to commit
 4. `git commit` your new commit
@@ -12,7 +12,7 @@ Accidentally pushed something to GitHub you weren't supposed to? Have no (read: 
 1. Checkout branch that has the commit
 2. `git log` and copy the first part of the hash of the commit
 3. Checkout branch to add the commit to
-4. `git cherry-pick <commit ID of xx>` to add that commit to the current branch
+4. `git cherry-pick <commit hash>` to add that commit to the current branch
 
 [Reference: StackOverflow](https://stackoverflow.com/questions/14635672/git-rebase-a-single-commit)
 
@@ -27,7 +27,7 @@ Accidentally pushed something to GitHub you weren't supposed to? Have no (read: 
 - Total changed files with file status `git diff --name-status HEAD~5 HEAD^`
 - Total changed files with file status by commit `git diff --name-status --oneline HEAD~12 HEAD~4`
 - Total changed files `git diff --name-only HEAD~3 HEAD`
-- Files changed in a commit `git show --name-only commit-SHA`
+- Files changed in a commit `git show --name-only <commit hash>`
 
 ##### Merge Methods
 ###### Resolve Single File to either side
@@ -38,4 +38,3 @@ Accidentally pushed something to GitHub you weren't supposed to? Have no (read: 
 - `git checkout HEAD -- file`
   - This resolves to the current HEAD version (which should be ~= --ours)
   - This doesn't require you to `git add` afterwards, it immediately resolves
-  
