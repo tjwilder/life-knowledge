@@ -9,3 +9,8 @@
 
 # Generic stuff
 *.zip
+
+# Vim files
+/config/.vim/autoload/**
+/config/.vim/plugged/**
+/config/.vim/view/**

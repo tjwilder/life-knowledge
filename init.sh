@@ -21,21 +21,25 @@ mkdir -p $GENERAL_SCRIPTS_DIR
 ### COPY SCRIPTS
 
 #### Docker & Docker-Compose Scripts
-cp ./scripts/docker/* $DOCKER_SCRIPTS_DIR
+cp -rn ./scripts/docker/ $DOCKER_SCRIPTS_DIR
 
 #### Git Scripts
-cp ./scripts/git/* $GIT_SCRIPTS_DIR
+cp -rn ./scripts/git/ $GIT_SCRIPTS_DIR
 
 ### General Scripts
-cp ./scripts/general/* $GENERAL_SCRIPTS_DIR
+cp -rn ./scripts/general/ $GENERAL_SCRIPTS_DIR
 
 ### UPDATE PATH
 if ! grep -Fq $SCRIPT_RC ~/.bashrc; then
+	# On Linux startup
 	echo "source $SCRIPT_RC" >> ~/.bashrc
-	touch $SCRIPT_RC
-	echo 'export PATH="${BASE_SCRIPTS_DIR}:$PATH"' >> $SCRIPT_RC
+	# On Mac startup
+	echo "source $SCRIPT_RC" >> ~/.bash_profile
+	mkdir -r $SCIPT_RC
+	# Exports by expanding BASE_SCRIPTS_DIR but not $PATH
+	echo "export PATH=\"$BASE_SCRIPTS_DIR"':$PATH"' >> $SCRIPT_RC
 	# If we're in WSL, we also need to fix Docker
-	if grep -q Microsoft /proc/version; then
+	if [-e /proc/version && grep -q Microsoft /proc/version]; then
 		echo 'export DOCKER_HOST="tcp://localhost:2375"' >> $SCRIPT_RC
 	fi
 fi
@@ -50,20 +54,24 @@ fi
 ## Config Files
 tput setaf 6; echo 'Setting configuration settings'; tput sgr0
 ### Vim
-cp ./config/vim/* ~/
-##### Install vim-plug
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+# TODO: Fix these for Windows
+# Hard link to main .vimrc
+ln ./config/.vimrc ~/
+# Soft link to the config/.vim directory
+ln -s $PWD/.vim ~/
 
 ### Tmux
-cp ./config/tmux/* ~/
+cp -rn ./config/tmux/ ~/
 ##### Install TPM
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+if [ ! -d "~/.tmux/plugins/tpm" ]; then
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
 
 ### Git
-cp ./config/git/* ~/
+cp -rn ./config/git/ ~/
 
 ## WSL (Windows Subsystem for Linux) Stuff
-if grep -q Microsoft /proc/version; then
+if [-e /proc/version && grep -q Microsoft /proc/version]; then
 	tput setaf 6; echo 'Initializing WSL settings...'; tput sgr0
 	### Fix WSL using /mnt/c instead of /c
 	tput setaf 7
@@ -78,14 +86,21 @@ if grep -q Microsoft /proc/version; then
 	echo "echo 'YOUR_PASSWORD_HERE' | sudo -S -p ' ' mount --bind /mnt/c /c"
 	echo 'cd ${PWD#/mnt}'
 	echo 'echo # for formatting'
-	echo
+	echo ''
 
 	#### Fix docker mounting config with powershell script
 	#### Auto-fix outside of WSL if possible
 fi
 
-## Native linux-specific stuff (non-WSL)
-if ! grep -q Microsoft /proc/version; then
-	### If I ever get anything...
-	echo
-fi
+## Detect operating systems
+# if [ "$(uname)" == "Darwin" ]; then
+#     # Do something under Mac OS X platform
+# 	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+# 	brew install ripgrep
+# elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+#     # Do something under GNU/Linux platform
+# elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+#     # Do something under 32 bits Windows NT platform
+# elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
+#     # Do something under 64 bits Windows NT platform
+# fi

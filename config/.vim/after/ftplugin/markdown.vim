@@ -1,0 +1,2 @@
+
+" nnoremap o A<CR>
