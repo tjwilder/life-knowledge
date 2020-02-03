@@ -60,6 +60,9 @@ ln ./config/.vimrc ~/
 # Soft link to the config/.vim directory
 ln -s $PWD/.vim ~/
 
+# Soft link for general config
+ln -s ./config/.config ~/
+
 ### Tmux
 cp -rn ./config/tmux/ ~/
 ##### Install TPM
@@ -69,6 +72,14 @@ fi
 
 ### Git
 cp -rn ./config/git/ ~/
+#### Git Completion in bash
+curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
+# $_ is the last argument to the previous command (in this case, the `test` command)
+# On Linux startup
+echo "test -f ~/.git-completion.bash && . $_" >> ~/.bashrc
+# On Mac startup
+echo "test -f ~/.git-completion.bash && . $_" >> ~/.bash_profile
+
 
 ## WSL (Windows Subsystem for Linux) Stuff
 if [-e /proc/version && grep -q Microsoft /proc/version]; then
@@ -93,14 +104,19 @@ if [-e /proc/version && grep -q Microsoft /proc/version]; then
 fi
 
 ## Detect operating systems
-# if [ "$(uname)" == "Darwin" ]; then
-#     # Do something under Mac OS X platform
-# 	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-# 	brew install ripgrep
-# elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-#     # Do something under GNU/Linux platform
-# elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
-#     # Do something under 32 bits Windows NT platform
-# elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
-#     # Do something under 64 bits Windows NT platform
-# fi
+if [ "$(uname)" == "Darwin" ]; then
+    # Do something under Mac OS X platform
+	echo "Mac OS X"
+	./brewing.sh
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    # Do something under GNU/Linux platform
+	echo "GNU/Linux"
+elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+    # Do something under 32 bits Windows NT platform
+	echo "MINGW32_NT"
+elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
+    # Do something under 64 bits Windows NT platform
+	echo "MINGW64_NT"
+else
+	echo "Unknown operating system..."
+fi

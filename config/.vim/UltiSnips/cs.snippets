@@ -1,0 +1,19 @@
+# as you first type comma-separated parameters on the right, {n} values appear in the format string
+snippet dl "Debug.LogFormat with parameters" b
+Debug.LogFormat("${2:`!p
+snip.rv = ' '.join(['{' + str(i) + '}' for i in range(t[1].count(','))])
+`}"${1:, something});
+endsnippet
+
+snippet dlw "Debug.LogWarningFormat with parameters" b
+Debug.LogWarningFormat("${2:`!p
+snip.rv = ' '.join(['{' + str(i) + '}' for i in range(t[1].count(','))])
+`}"${1:, something});
+endsnippet
+
+snippet dle "Debug.LogErrorFormat with parameters" b
+Debug.LogErrorFormat("${2:`!p
+snip.rv = ' '.join(['{' + str(i) + '}' for i in range(t[1].count(','))])
+`}"${1:, something});
+endsnippet
+

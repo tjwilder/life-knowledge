@@ -5,6 +5,8 @@ inoremap jk <ESC>
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
 
+" Save with ctrl-s
+nnoremap <C-s> :w<CR>
 " Navigate across splits with ctrl-direction
 nnoremap <silent> <C-l> <C-w>l
 nnoremap <silent> <C-h> <C-w>h

@@ -45,3 +45,33 @@ function! CreateBlogPost(name) range
 	endfor
 endfunction
 command -range -nargs=1 CreateBlogPost <line1>,<line2>call CreateBlogPost(<f-args>)
+
+function! FixThis()
+  if &ft ==# 'python'
+    !autopep8 --global-config ~/.config/flake8 --in-place --aggressive --aggressive %:p
+  else
+    YcmCompleter FixIt
+  endif
+endfunction
+
+function! Draw(file)
+  let file = a:file . '.jpg'
+  execute 'normal a![alt text](' . file . ')'
+  " TODO: Setting? Allow for other image editing and other files/filetypes
+  execute '!cp ~/Desktop/Code/life-knowledge/default.jpg ' . file
+  " !photoshop file
+  execute '!open -a /Applications/Adobe\ Photoshop\ 2020/Adobe\ Photoshop\ 2020.app ' . file
+endfunction
+command -nargs=1 Draw call Draw(<f-args>)
+
+function! custom_funcs#Title(...)
+  let template = get(a:000, 0, "$1")
+  let arg2 = get(a:000, 1, "")
+  let basename = expand('%:p:s?\v(.*\/)([^\/]+)\/?\2 - ?:s?\v(.)-?\1 ?')
+
+  if basename == ''
+    return arg2
+  else
+    return substitute(template, '$1', basename, 'g')
+  endif
+endf

@@ -1,0 +1,7 @@
+# E101 = autopop8 Reindent all lines
+# E111,E114 = Indentation must be multiple of 4
+# E129 = Visually indented line with same indent as next logical line
+# E402 = module level import not at top of file
+# W503 Line break before binary operator
+[flake8]
+ignore = E101,E111,E114,E129,E402,W503

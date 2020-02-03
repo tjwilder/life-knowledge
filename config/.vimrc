@@ -1,18 +1,17 @@
-" If you need to load anything before .vimrc, use this
-if filereadable(expand("~/.vimrc.before"))
-  source ~/.vimrc.before
-endif
+set nocompatible
 
 " Load plugins
 if filereadable(expand("~/.vim/plugins.vim"))
   source ~/.vim/plugins.vim
 endif
 
+syntax enable
+filetype plugin on
+filetype indent on
 
 " Main configuration
 set encoding=UTF-8
 set t_Co=256                   " Terminal colors
-syntax enable
 set backspace=indent,eol,start " Allow backspace in insert mode
 set history=1000               " Store lots of :cmdline history
 set showcmd                    " Show incomplete cmds down the bottom
@@ -23,7 +22,11 @@ set autoread                   " Reload files changed outside vim
 set mouse=a                    " Enable mouse control
 set hidden                     " Allows background buffers to stay alive
 let mapleader=","              " Remap default command leader from \ to ,
-set relativenumber
+set relativenumber   " Relative instead of absolute line numbers
+
+" Conceal
+set conceallevel=2 " Conceal everything specified
+set concealcursor=""  " Stop concealing on the cursor
 
 " Smart case searching
 set title                      " Name for the terminal
@@ -50,25 +53,28 @@ set smartindent " Smart indents
 set softtabstop=2
 
 " Folds
-set foldmethod=indent " By default, fold on indents
+set foldmethod=syntax " By default, fold on syntax
+set foldignore=false  " Include # comments in the folds
 set nofoldenable      " Folds are created but not folded on file open
 set foldlevel=2       " Max auto-fold level
+" set foldlevelstart=3  " ??
 
 " Scrolling
 set scrolloff=5       " Start scrolling when we're 5 lines away from margins
 set sidescrolloff=15  " Give us more space when side scrolling
 set sidescroll=1      " Used if wrapping is disabled
 
-" Enable plguns & indent files based on file type
-filetype plugin on
-filetype indent on
+let g:tex_flavor = "latex"
+let g:tex_conceal = "abmg" " conceal for accents/bold/math/greek
+let g:pandoc#syntax#conceal#use = 0
 
 " Display tabs and trailing spaces visually
 set list listchars=tab:\ \ ,trail:·
 
 "" Persistent undo history across sessions
+set noswapfile " Disable .swp
 " Only works all the time.
-if has('persistent_undo') && isdirectory(expand('~').'/.vim/backups')
+if has('persistent_undo')" && isdirectory(expand('~').'/.vim/backups')
   silent !mkdir ~/.vim/backups > /dev/null 2>&1
   set undodir=~/.vim/backups
   set undofile
@@ -98,9 +104,6 @@ nmap <F8> :TagbarToggle<CR>
 
 
 """ Plugin options
-"" YouCompleteMe options
-let g:ycm_confirm_extra_conf = 0
-
 "" Colorizer
 " What file types should we color in css colors for
 let g:colorizer_auto_filetype = 'css,html,js,md'
@@ -130,20 +133,6 @@ let g:rainbow_conf = {
 \		'css': 0,
 \	}
 \}
-
-"" Indent Guides
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_start_level = 2
-let g:indent_guides_guide_size = 1
-let g:indent_guides_auto_colors = 1
-augroup IndentGuides
-	autocmd!
-	autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=102
-	autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=24
-augroup END
-
-"" Markdown preview
-let vim_markdown_preview_github=1
 
 " Resourcing fixes
 if exists("g:loaded_webdevicons")
