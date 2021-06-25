@@ -8,6 +8,34 @@ GENERAL_SCRIPTS_DIR="${BASE_SCRIPTS_DIR}/general"
 
 SCRIPT_RC="${BASE_SCRIPTS_DIR}/.scriptrc"
 
+## Figure out Operating System / Platform
+PLATFORM="$(uname -s)"
+LINUX=false
+MAC=false
+WINDOWS=false
+WSL=false
+
+if [[ "$(echo $PLATFORM | cut -c1-5)" = "Linux" ]]; then
+    LINUX=true
+elif [ "$(echo $PLATFORM | cut -c1-6)" == "Darwin" ]; then
+    MAC=true
+elif [ "$(echo $PLATFORM | cut -c1-10)" == "MINGW32_NT" ]; then
+    WINDOWS=true
+elif [ "$(echo $PLATFORM | cut -c1-10)" == "MINGW64_NT" ]; then
+    WINDOWS=true
+fi
+if [ -d /proc/version ] && [ grep -q Microsoft /proc/version ]; then
+	WSL=true
+fi
+
+## Startup File
+if [[ "$LINUX" == true ]]; then
+	STARTUP_FILE="$HOME/.bashrc"
+elif [[ "$MAC" == true ]]; then
+	STARTUP_FILE="$HOME/.bash_profile"
+fi
+
+
 # SETUP LINUX STUFF
 
 ## INSTALL SCRIPTS
@@ -30,19 +58,19 @@ cp -rn ./scripts/git/ $GIT_SCRIPTS_DIR
 cp -rn ./scripts/general/ $GENERAL_SCRIPTS_DIR
 
 ### UPDATE PATH
-if ! grep -Fq $SCRIPT_RC ~/.bashrc; then
-	# On Linux startup
-	echo "source $SCRIPT_RC" >> ~/.bashrc
-	# On Mac startup
-	echo "source $SCRIPT_RC" >> ~/.bash_profile
-	mkdir -r $SCIPT_RC
-	# Exports by expanding BASE_SCRIPTS_DIR but not $PATH
-	echo "export PATH=\"$BASE_SCRIPTS_DIR"':$PATH"' >> $SCRIPT_RC
-	# If we're in WSL, we also need to fix Docker
-	if [-e /proc/version && grep -q Microsoft /proc/version]; then
-		echo 'export DOCKER_HOST="tcp://localhost:2375"' >> $SCRIPT_RC
-	fi
+SOURCE_SCRIPT="=== Life Knowledge Config ==="
+### If it's not already in the startup file, make sure to source $SCRIPT_RC
+if [ ! -e $STARTUP_FILE ]; then
+	touch $STARTUP_FILE
 fi
+if ! grep -Fq "=== Life Knowledge Startup Script ===" "$STARTUP_FILE"; then
+	echo "=== Life Knowledge Startup Script ===" >> "$STARTUP_FILE"
+	echo "source $SCRIPT_RC" >> "$STARTUP_FILE"
+	mkdir -p $SCIPT_RC
+fi
+
+# Exports by expanding BASE_SCRIPTS_DIR but not $PATH
+SOURCE_SCRIPT="${SOURCE_SCRIPT}"$'\n'"export PATH=\"$BASE_SCRIPTS_DIR"':$PATH"'
 
 ## SET DEFAULT ENV VARS
 
@@ -55,10 +83,16 @@ fi
 tput setaf 6; echo 'Setting configuration settings'; tput sgr0
 ### Vim
 # TODO: Fix these for Windows
-# Hard link to main .vimrc
-ln ./config/.vimrc ~/
+if [ ! -e "$HOME/.vimrc" ]; then
+	# Try Hard link to main .vimrc
+	ln ./config/.vimrc ~/
+	if [[ $? == 1 ]]; then
+		cp ./config/.vimrc ~/.vimrc
+		tput setaf 6; echo 'Could not hard link .vimrc, copying instead'; tput sgr0
+	fi
+fi
 # Soft link to the config/.vim directory
-ln -s $PWD/.vim ~/
+ln -s ./.vim ~/
 
 # Soft link for general config
 ln -s ./config/.config ~/
@@ -75,15 +109,13 @@ cp -rn ./config/git/ ~/
 #### Git Completion in bash
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
 # $_ is the last argument to the previous command (in this case, the `test` command)
-# On Linux startup
-echo "test -f ~/.git-completion.bash && . $_" >> ~/.bashrc
-# On Mac startup
-echo "test -f ~/.git-completion.bash && . $_" >> ~/.bash_profile
-
+SOURCE_SCRIPT="${SOURCE_SCRIPT}"$'\n'"test -f $HOME/.git-completion.bash && . $_" 
 
 ## WSL (Windows Subsystem for Linux) Stuff
-if [-e /proc/version && grep -q Microsoft /proc/version]; then
+# If we're in WSL, we also need to "fix" Docker
+if [[ "$WSL" == true ]]; then
 	tput setaf 6; echo 'Initializing WSL settings...'; tput sgr0
+	SOURCE_SCRIPT="${SOURCE_SCRIPT}"$'\n'"export DOCKER_HOST=\"tcp://localhost:2375\""
 	### Fix WSL using /mnt/c instead of /c
 	tput setaf 7
 	echo 'Fixing Docker mounting requires manual intervention'
@@ -103,19 +135,18 @@ if [-e /proc/version && grep -q Microsoft /proc/version]; then
 	#### Auto-fix outside of WSL if possible
 fi
 
+# Write out SCRIPT_RC
+echo "$SOURCE_SCRIPT" > $SCRIPT_RC
+
 ## Detect operating systems
-if [ "$(uname)" == "Darwin" ]; then
-    # Do something under Mac OS X platform
-	echo "Mac OS X"
+if [[ "$MAC" == true ]]; then
+	echo "Mac OS X; Performing brew commands"
 	./brewing.sh
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-    # Do something under GNU/Linux platform
+elif [[ "$LINUX" == true ]]; then
 	echo "GNU/Linux"
 elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
-    # Do something under 32 bits Windows NT platform
 	echo "MINGW32_NT"
 elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
-    # Do something under 64 bits Windows NT platform
 	echo "MINGW64_NT"
 else
 	echo "Unknown operating system..."
